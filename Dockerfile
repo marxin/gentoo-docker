@@ -21,11 +21,17 @@ RUN ./configure --enable-gold --enable-plugins --without-included-gettext --with
 
 # link LTO plugins
 WORKDIR /abuild/
+RUN touch test2
 RUN git clone https://github.com/marxin/gentoo-docker.git
 RUN cp gentoo-docker/configuration/x86_64-pc-linux-gnu-5.0.0 /etc/env.d/gcc/
+RUN cp gentoo-docker/configuration/no-lto.conf /etc/portage/env.d
+RUN cp gentoo-docker/configuration/package.env /etc/portage/
 RUN gcc-config 2 && env-update && . /etc/profile
 RUN mkdir -p /usr/x86_64-pc-linux-gnu/bin/../2.24/../lib/bfd-plugins && ln -s /usr/libexec/gcc/x86_64-pc-linux-gnu/5.0.0/liblto_plugin.so /usr/x86_64-pc-linux-gnu/lib/bfd-plugins/
 
 # setup make.conf
 WORKDIR /abuild/
-RUN cp gentoo-docker/configuration/make.conf /etc/portage/package
+RUN cp gentoo-docker/configuration/make.conf /etc/portage
+
+# emerge, yeah!
+RUN emerge numpy
